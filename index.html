@@ -577,4 +577,33 @@ function openDetail(shop, push){
       a.target = "_blank";
       a.rel = "noopener";
       a.textContent = labels[key] || key;
-      socialWrap.appendChil
+      socialWrap.appendChild(a);
+    });
+  }
+
+  document.getElementById("detailPage").classList.add("show");
+  document.getElementById("detailPage").scrollTop = 0;
+
+  if(push){
+    const idx = shops.indexOf(shop);
+    history.pushState({ view:"detail", index: idx }, "", "#dukan-" + idx);
+  }
+}
+
+function closeDetail(){
+  document.getElementById("detailPage").classList.remove("show");
+}
+
+document.getElementById("detailBack").addEventListener("click", ()=> history.back());
+
+window.addEventListener("popstate", (e)=>{
+  if(e.state && e.state.view === "detail"){
+    openDetail(shops[e.state.index], false);
+  } else {
+    closeDetail();
+  }
+});
+</script>
+
+</body>
+</html>
