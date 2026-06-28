@@ -22,7 +22,7 @@
   }
   html{ scroll-behavior:smooth; }
   *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent;}
-  .cat-tile, .shop-row, .modal-close, a, button{ outline:none; -webkit-tap-highlight-color:transparent; }
+  .cat-tile, .shop-box, .detail-back, a, button{ outline:none; -webkit-tap-highlight-color:transparent; }
   body{
     font-family:'Almarai', sans-serif;
     background:var(--sand);
@@ -48,19 +48,6 @@
     padding:56px 20px 36px;
     position:relative;
   }
-  .menu-toggle{
-    position:absolute;
-    top:22px;
-    right:20px;
-    width:44px; height:44px;
-    border:none; border-radius:10px;
-    background:rgba(255,255,255,.15);
-    color:#FFFFFF;
-    font-size:22px;
-    cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-  }
-  .menu-toggle:hover{ background:rgba(255,255,255,.25); }
 
   .browse-cta{
     display:inline-flex;
@@ -143,50 +130,48 @@
     border-right:5px solid var(--clay); padding-right:12px;
   }
 
-  .shop-row{
-    display:flex; align-items:center; gap:16px;
+  .shop-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(110px,1fr));
+    gap:10px;
+  }
+  .shop-box{
     background:var(--card);
     border:1px solid var(--sand-deep);
     border-radius:12px;
-    padding:14px 16px;
-    margin-bottom:10px;
+    padding:18px 10px;
+    text-align:center;
     cursor:pointer;
-    transition:box-shadow .15s ease, border-color .15s;
-    position:relative;
-    overflow:hidden;
-  }
-  .shop-row:hover{ box-shadow:0 6px 18px rgba(43,33,24,.10); border-color:var(--gold); }
-  .serial{
-    width:34px; height:34px; flex:none;
-    border-radius:50%;
-    background:var(--clay); color:#fff;
+    font-weight:700;
+    font-size:14.5px;
+    line-height:1.4;
     display:flex; align-items:center; justify-content:center;
-    font-weight:800; font-size:14px;
+    min-height:74px;
+    transition:box-shadow .15s ease, border-color .15s;
   }
-  .shop-thumb{
-    width:54px; height:54px; border-radius:10px; flex:none;
-    background-size:cover; background-position:center;
-    opacity:.55; filter:saturate(.7) blur(.2px);
-    border:1px solid var(--sand-deep);
-  }
-  .shop-row .name{ font-weight:700; font-size:16.5px; flex:1; }
-  .shop-row .arrow{ color:var(--clay); font-size:18px; }
+  .shop-box:hover{ box-shadow:0 6px 18px rgba(43,33,24,.10); border-color:var(--gold); }
 
   .empty-note{
     color:#8a7a60; font-size:14.5px; padding:18px; text-align:center;
     border:1.5px dashed var(--sand-deep); border-radius:10px;
   }
 
-  /* ===== Modal (shop detail reveal) ===== */
-  .overlay{
-    position:fixed; inset:0; background:rgba(33,28,22,.55);
-    display:none; align-items:center; justify-content:center;
-    padding:18px; z-index:50;
+  /* ===== Shop detail page (full screen, history-based) ===== */
+  .detail-page{
+    position:fixed; inset:0; background:var(--sand);
+    display:none; flex-direction:column;
+    z-index:60; overflow-y:auto;
   }
-  .overlay.show{ display:flex; animation:fadeIn .2s ease; }
-  .modal{
-    background:var(--card); border-radius:16px; max-width:480px; width:100%;
-    overflow:hidden; box-shadow:0 24px 50px rgba(0,0,0,.35);
+  .detail-page.show{ display:flex; animation:fadeIn .2s ease; }
+  .detail-back{
+    display:flex; align-items:center; gap:8px;
+    padding:16px 18px;
+    font-weight:800; font-size:15px;
+    color:var(--clay);
+    cursor:pointer;
+    border-bottom:1px solid var(--sand-deep);
+    background:var(--card);
+    position:sticky; top:0; z-index:1;
   }
   .modal-photo{
     height:200px; background-size:cover; background-position:center;
@@ -200,13 +185,7 @@
     position:absolute; bottom:14px; right:18px; left:18px;
     color:#fff; font-size:24px; font-weight:800;
   }
-  .modal-close{
-    position:absolute; top:10px; left:10px;
-    width:32px; height:32px; border-radius:50%;
-    background:rgba(0,0,0,.45); color:#fff; border:none;
-    font-size:18px; cursor:pointer; line-height:1;
-  }
-  .modal-body{ padding:18px 20px 22px; }
+  .modal-body{ padding:18px 20px 22px; max-width:480px; margin:0 auto; width:100%; }
   .modal-cat-tag{
     display:inline-block; font-size:12.5px; font-weight:700;
     background:var(--sand-deep); color:var(--clay-deep);
@@ -322,7 +301,6 @@
 <body>
 
 <header id="top">
-  <button class="menu-toggle" id="menuToggle" aria-label="القائمة">☰</button>
   <a href="#top" id="homeLink" style="text-decoration:none;">
     <h1 class="wordmark" style="color:#FFFFFF;">سوق خيمة</h1>
   </a>
@@ -352,7 +330,7 @@
 
   <section id="shopList">
     <div class="list-title" id="listTitle">المحلات</div>
-    <div id="rows"></div>
+    <div id="rows" class="shop-grid"></div>
   </section>
 
   <!-- ===== Trust section ===== -->
@@ -410,22 +388,20 @@
   <div class="signature">© 2026 سوق خيمة — جميع الحقوق محفوظة</div>
 </footer>
 
-<!-- ===== Detail modal ===== -->
-<div class="overlay" id="overlay">
-  <div class="modal" id="modalBox">
-    <div class="modal-photo" id="modalPhoto">
-      <div class="gradient"></div>
-      <button class="modal-close" id="modalClose">×</button>
-      <div class="modal-name" id="modalName"></div>
-    </div>
-    <div class="modal-body">
-      <span class="modal-cat-tag" id="modalCatTag"></span>
-      <div class="modal-location" id="modalLocation"></div>
-      <p class="modal-desc" id="modalDesc"></p>
-      <div class="modal-actions">
-        <div id="modalContacts"></div>
-        <div class="btn-social" id="modalSocial"></div>
-      </div>
+<!-- ===== Shop detail page (full screen, with proper back navigation) ===== -->
+<div class="detail-page" id="detailPage">
+  <div class="detail-back" id="detailBack">← الرجوع للقائمة</div>
+  <div class="modal-photo" id="modalPhoto">
+    <div class="gradient"></div>
+    <div class="modal-name" id="modalName"></div>
+  </div>
+  <div class="modal-body">
+    <span class="modal-cat-tag" id="modalCatTag"></span>
+    <div class="modal-location" id="modalLocation"></div>
+    <p class="modal-desc" id="modalDesc"></p>
+    <div class="modal-actions">
+      <div id="modalContacts"></div>
+      <div class="btn-social" id="modalSocial"></div>
     </div>
   </div>
 </div>
@@ -509,6 +485,7 @@ document.getElementById("homeLink").addEventListener("click", (e)=>{
   e.preventDefault();
   document.getElementById("categories").classList.remove("show");
   document.getElementById("shopList").classList.remove("show");
+  document.getElementById("detailPage").classList.remove("show");
   document.querySelectorAll(".cat-tile").forEach(t=>t.classList.remove("active"));
   activeCat = null;
   window.scrollTo({top:0, behavior:"smooth"});
@@ -525,7 +502,6 @@ function toggleCategories(){
   cta.querySelector(".bounce-icon").style.animation = "none";
 }
 
-document.getElementById("menuToggle").addEventListener("click", toggleCategories);
 document.getElementById("browseCTA").addEventListener("click", toggleCategories);
 
 document.querySelectorAll(".cat-tile").forEach(tile=>{
@@ -549,25 +525,19 @@ function renderList(cat){
   if(filtered.length===0){
     rows.innerHTML = `<div class="empty-note">এই ক্যাটাগরিতে এখনো কোনো দোকান যোগ করা হয়নি।</div>`;
   } else {
-    filtered.forEach((shop, i)=>{
-      const row = document.createElement("div");
-      row.className = "shop-row";
-      const bg = shop.image ? shop.image : "";
-      row.innerHTML = `
-        <div class="serial">${String(i+1).padStart(2,"0")}</div>
-        <div class="shop-thumb" style="background-color:${catFallbackColor[cat]}; background-image:url('${bg}')"></div>
-        <div class="name">${shop.name}</div>
-        <div class="arrow">‹</div>
-      `;
-      row.addEventListener("click", ()=>openModal(shop));
-      rows.appendChild(row);
+    filtered.forEach((shop)=>{
+      const box = document.createElement("div");
+      box.className = "shop-box";
+      box.textContent = shop.name;
+      box.addEventListener("click", ()=>openDetail(shop, true));
+      rows.appendChild(box);
     });
   }
 
   wrap.classList.add("show");
 }
 
-function openModal(shop){
+function openDetail(shop, push){
   document.getElementById("modalPhoto").style.backgroundImage = shop.image ? `url('${shop.image}')` : "none";
   document.getElementById("modalPhoto").style.backgroundColor = catFallbackColor[shop.category[0]];
   document.getElementById("modalName").textContent = shop.name;
@@ -607,19 +577,4 @@ function openModal(shop){
       a.target = "_blank";
       a.rel = "noopener";
       a.textContent = labels[key] || key;
-      socialWrap.appendChild(a);
-    });
-  }
-
-  document.getElementById("overlay").classList.add("show");
-}
-
-document.getElementById("modalClose").addEventListener("click", closeModal);
-document.getElementById("overlay").addEventListener("click", (e)=>{
-  if(e.target.id === "overlay") closeModal();
-});
-function closeModal(){ document.getElementById("overlay").classList.remove("show"); }
-</script>
-
-</body>
-</html>
+      socialWrap.appendChil
