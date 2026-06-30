@@ -592,9 +592,6 @@ document.getElementById("homeLink").addEventListener("click", (e)=>{
 function toggleCategories(){
   const cats = document.getElementById("categories");
   cats.classList.toggle("show");
-  const cta = document.getElementById("browseCTA");
-  cta.style.animation = "none";
-  cta.querySelector(".bounce-icon").style.animation = "none";
 }
 
 document.getElementById("browseCTA").addEventListener("click", toggleCategories);
