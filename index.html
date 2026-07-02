@@ -319,6 +319,39 @@
     text-decoration:none;
   }
   .addshop-actions{ display:flex; flex-direction:column; align-items:center; gap:12px; }
+
+  /* ===== Apply form ===== */
+  .apply-btn{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--clay); color:#fff;
+    font-family:'Almarai',sans-serif; font-weight:800; font-size:17px;
+    padding:15px 32px; border-radius:30px; border:none; cursor:pointer;
+    box-shadow:0 6px 18px rgba(11,107,58,.3);
+    animation:pulseCTA 2.2s ease-in-out infinite;
+    margin-top:8px;
+  }
+  .apply-btn:hover{ filter:brightness(1.1); }
+  .form-group{ margin-bottom:14px; text-align:right; }
+  .form-group label{ display:block; font-weight:700; font-size:14px; margin-bottom:6px; color:var(--ink); }
+  .form-group input, .form-group select, .form-group textarea{
+    width:100%; padding:11px 14px; border:1.5px solid var(--sand-deep);
+    border-radius:10px; font-family:'Almarai',sans-serif; font-size:14.5px;
+    background:#FAFAF8; color:var(--ink); outline:none;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus{ border-color:var(--clay); background:#fff; }
+  .form-group textarea{ resize:vertical; }
+  .req{ color:#e74c3c; }
+  .apply-submit{
+    width:100%; padding:13px; background:var(--clay); color:#fff;
+    font-family:'Almarai',sans-serif; font-weight:800; font-size:16px;
+    border:none; border-radius:10px; cursor:pointer; margin-bottom:10px;
+  }
+  .apply-submit:hover{ filter:brightness(1.1); }
+  .apply-cancel{
+    width:100%; padding:11px; background:var(--sand-deep); color:#5b4d3c;
+    font-family:'Almarai',sans-serif; font-weight:700; font-size:14px;
+    border:none; border-radius:10px; cursor:pointer;
+  }
 </style>
 </head>
 <body>
@@ -411,23 +444,67 @@
   </section>
 
   <!-- ===== Add your shop section ===== -->
-  <section class="addshop-section">
-    <h3>هل لديك محل وتريد إضافته هنا؟<br><span class="en-sub">Want to add your shop?</span></h3>
-    <p class="sub">أرسل لنا بيانات محلك عبر البريد الإلكتروني وسنقوم بمراجعتها وإضافتها خلال 24-48 ساعة.<br><span class="en-sub">Send us your shop details by email and we'll review and add it within 24-48 hours.</span></p>
-    <ul class="addshop-checklist">
-      <li>اسم المحل (عربي + إنجليزي إن وجد) <span class="en-sub">Shop name (Arabic + English)</span></li>
-      <li>التصنيف (خيام، أثاث، مظلات...) <span class="en-sub">Category (tents, furniture, shades...)</span></li>
-      <li>العنوان أو رابط الموقع على الخريطة <span class="en-sub">Address or map location link</span></li>
-      <li>رقم الجوال / واتساب <span class="en-sub">Mobile / WhatsApp number</span></li>
-      <li>2-3 صور للمحل أو المنتجات <span class="en-sub">2-3 photos of the shop or products</span></li>
-      <li>روابط مواقع التواصل الاجتماعي (اختياري) <span class="en-sub">Social media links (optional)</span></li>
-      <li>وصف مختصر عن المحل (2-3 جمل) <span class="en-sub">Short description (2-3 sentences)</span></li>
-    </ul>
-    <div class="addshop-actions">
-      <a class="btn-email" href="mailto:souqkhema@gmail.com?subject=إضافة محل جديد في سوق خيمة">
-        ✉️ راسلنا / Email us: souqkhema@gmail.com
-      </a>
+  <section class="addshop-section" id="addShopSection">
+
+    <div id="applyBtn-wrap">
+      <h3>هل لديك محل وتريد إضافته هنا؟<br><span class="en-sub">Want to add your shop?</span></h3>
+      <p class="sub">سيتم مراجعة بياناتك وإضافة محلك خلال 24-48 ساعة.<br><span class="en-sub">We'll review and add your shop within 24-48 hours.</span></p>
+      <button class="apply-btn" id="applyBtn">
+        🏪 Apply Your Shop — Click Now
+      </button>
     </div>
+
+    <div id="shopForm" style="display:none;">
+      <h3 style="margin-bottom:18px; text-align:center;">📋 أدخل بيانات محلك / Enter Your Shop Details</h3>
+
+      <div class="form-group">
+        <label>اسم المحل / Shop Name <span class="req">*</span></label>
+        <input type="text" id="f_name" placeholder="مثال: خيام الوفاء / e.g. Al Wafa Tents">
+      </div>
+
+      <div class="form-group">
+        <label>اسم المالك / Owner Name <span class="req">*</span></label>
+        <input type="text" id="f_owner" placeholder="الاسم الكامل / Full name">
+      </div>
+
+      <div class="form-group">
+        <label>رقم الجوال / WhatsApp Number <span class="req">*</span></label>
+        <input type="tel" id="f_phone" placeholder="966501234567" dir="ltr">
+      </div>
+
+      <div class="form-group">
+        <label>التصنيف / Category <span class="req">*</span></label>
+        <select id="f_cat">
+          <option value="">-- اختر / Choose --</option>
+          <option value="بيت الخيام / Tents">⛺ بيت الخيام / Tents</option>
+          <option value="بيت الملكية / Royal Houses">🏠 بيت الملكية / Royal Houses</option>
+          <option value="منتجات الكنف / Kenaf Products">🛋️ منتجات الكنف / Kenaf Products</option>
+          <option value="مظلات سيارات / Car Shades">🚗 مظلات سيارات / Car Shades</option>
+          <option value="متعدد / Multiple">🏪 متعدد / Multiple</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>الموقع / Location</label>
+        <input type="text" id="f_location" placeholder="رابط خرائط أو العنوان / Maps link or address" dir="ltr">
+      </div>
+
+      <div class="form-group">
+        <label>وصف المحل / Shop Description</label>
+        <textarea id="f_desc" rows="3" placeholder="وصف مختصر / Brief description..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>روابط التواصل / Social Media <span class="en-sub" style="display:inline;">(optional)</span></label>
+        <input type="text" id="f_social" placeholder="Instagram, TikTok, Snapchat..." dir="ltr">
+      </div>
+
+      <div id="form-msg" style="display:none; padding:12px; border-radius:10px; text-align:center; font-weight:700; margin-bottom:12px;"></div>
+
+      <button class="apply-submit" id="submitBtn">✅ إرسال / Submit</button>
+      <button class="apply-cancel" id="cancelBtn">✕ إلغاء / Cancel</button>
+    </div>
+
   </section>
 
 </main>
@@ -708,6 +785,59 @@ window.addEventListener("popstate", (e)=>{
   } else {
     closeDetail();
   }
+});
+
+document.getElementById("applyBtn").addEventListener("click", ()=>{
+  document.getElementById("shopForm").style.display = "block";
+  document.getElementById("applyBtn-wrap").style.display = "none";
+  document.getElementById("shopForm").scrollIntoView({behavior:"smooth"});
+});
+
+document.getElementById("cancelBtn").addEventListener("click", ()=>{
+  document.getElementById("shopForm").style.display = "none";
+  document.getElementById("applyBtn-wrap").style.display = "block";
+  document.getElementById("form-msg").style.display = "none";
+  ["f_name","f_owner","f_phone","f_social","f_location","f_desc"].forEach(id=>{
+    document.getElementById(id).value = "";
+  });
+  document.getElementById("f_cat").value = "";
+});
+
+document.getElementById("submitBtn").addEventListener("click", ()=>{
+  const name     = document.getElementById("f_name").value.trim();
+  const owner    = document.getElementById("f_owner").value.trim();
+  const phone    = document.getElementById("f_phone").value.trim();
+  const cat      = document.getElementById("f_cat").value;
+  const location = document.getElementById("f_location").value.trim();
+  const desc     = document.getElementById("f_desc").value.trim();
+  const social   = document.getElementById("f_social").value.trim();
+  const msg      = document.getElementById("form-msg");
+
+  if(!name || !owner || !phone || !cat){
+    msg.style.display = "block";
+    msg.style.background = "#ffeaea";
+    msg.style.color = "#c0392b";
+    msg.textContent = "⚠️ يرجى تعبئة الحقول الإلزامية / Please fill required fields (*)";
+    return;
+  }
+
+  const body = `اسم المحل / Shop Name: ${name}
+اسم المالك / Owner Name: ${owner}
+رقم الجوال / Phone: ${phone}
+التصنيف / Category: ${cat}
+الموقع / Location: ${location || "-"}
+وصف المحل / Description: ${desc || "-"}
+روابط التواصل / Social Media: ${social || "-"}`;
+
+  const subject = encodeURIComponent("إضافة محل جديد - " + name);
+  const bodyEnc = encodeURIComponent(body);
+
+  window.location.href = `mailto:souqkhema@gmail.com?subject=${subject}&body=${bodyEnc}`;
+
+  msg.style.display = "block";
+  msg.style.background = "#eafaf1";
+  msg.style.color = "#0B6B3A";
+  msg.textContent = "✅ شكراً! سيتم فتح تطبيق البريد / Thank you! Your email app will open.";
 });
 </script>
 
